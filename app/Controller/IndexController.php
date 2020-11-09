@@ -23,8 +23,6 @@ use Hyperf\Contract\OnMessageInterface;
 use Hyperf\Contract\OnOpenInterface;
 use Hyperf\Di\Annotation\Inject;
 use Swoole\Http\Request;
-use Swoole\Server;
-use Swoole\WebSocket;
 use Swoole\Websocket\Frame;
 
 class IndexController extends Controller implements OnMessageInterface, OnOpenInterface, OnCloseInterface
@@ -47,7 +45,7 @@ class IndexController extends Controller implements OnMessageInterface, OnOpenIn
      */
     protected $service;
 
-    public function onClose(Server $server, int $fd, int $reactorId): void
+    public function onClose($server, int $fd, int $reactorId): void
     {
         if ($obj = $this->service->find($fd)) {
             $this->service->delete($obj);
@@ -59,7 +57,7 @@ class IndexController extends Controller implements OnMessageInterface, OnOpenIn
         }
     }
 
-    public function onMessage(WebSocket\Server $server, Frame $frame): void
+    public function onMessage($server, Frame $frame): void
     {
         $fd = $frame->fd;
         $data = json_decode($frame->data, true);
@@ -77,7 +75,7 @@ class IndexController extends Controller implements OnMessageInterface, OnOpenIn
         $handler->handle($server, $fd, $data);
     }
 
-    public function onOpen(WebSocket\Server $server, Request $request): void
+    public function onOpen($server, Request $request): void
     {
         $token = $this->request->input('token');
 
