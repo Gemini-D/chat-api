@@ -24,6 +24,10 @@ jobs:
           tools: phpize
           ini-values: extension=swoole, opcache.enable_cli=1, swoole.use_shortname='Off'
           coverage: none
+      - name: Setup Services
+        run: |
+          docker network create net
+          docker run --network net --name redis -p 6379:6379 -d redis
       - name: Setup Swoole
         run: |
           wget https://github.com/swoole/swoole-src/archive/v${SW_VERSION}.tar.gz -O swoole.tar.gz
@@ -37,6 +41,12 @@ jobs:
           sudo make install
       - name: Setup Packages
         run: composer update -o
+      - name: Run Server
+        run: |
+          cp .env.example .env
+          docker build -t chat-api .
+          docker run --network net --name chat-api -p 9501:9501 -e DB_HOST=mysql -e REDIS_HOST=redis -d chat-api
+          docker run --network net --name chat-api2 -p 9502:9501 -e DB_HOST=mysql -e REDIS_HOST=redis -d chat-api
       - name: Run Test Cases
         run: |
           composer analyse

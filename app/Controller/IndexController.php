@@ -23,7 +23,7 @@ use Hyperf\Contract\OnMessageInterface;
 use Hyperf\Contract\OnOpenInterface;
 use Hyperf\Di\Annotation\Inject;
 use Swoole\Http\Request;
-use Swoole\Websocket\Frame;
+use Swoole\WebSocket\Frame;
 
 class IndexController extends Controller implements OnMessageInterface, OnOpenInterface, OnCloseInterface
 {
