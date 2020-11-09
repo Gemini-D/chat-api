@@ -77,6 +77,7 @@ class SendMessageHandler implements HandlerInterface
             }
 
             $this->nsq->publish(Constants::SEND_MESSAGE, Json::encode([
+                'id' => $user->id,
                 'data' => $data,
             ]));
         }

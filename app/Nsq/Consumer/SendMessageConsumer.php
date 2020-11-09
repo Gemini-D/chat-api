@@ -40,12 +40,12 @@ class SendMessageConsumer extends AbstractConsumer
     {
         $data = Json::decode($payload->getBody());
 
-        $token = $data['token'];
+        $id = (int) $data['id'];
         $data = $data['data'];
 
         $sender = $this->container->get(Sender::class);
 
-        $obj = $this->container->get(UserCollection::class)->find($token);
+        $obj = $this->container->get(UserCollection::class)->find($id);
         $node = $this->container->get(Node::class)->getId();
         if ($obj && $obj->node === $node) {
             $sender->push($obj->fd, json_encode($data));

@@ -19,7 +19,7 @@ class UserCollection extends StringCollection
     /**
      * @var string
      */
-    protected $prefix = 'user:token:';
+    protected $prefix = 'user:collection:';
 
     public function redis()
     {
@@ -30,12 +30,12 @@ class UserCollection extends StringCollection
     {
         $str = serialize($obj);
 
-        return $this->set($obj->token, $str, null);
+        return $this->set($obj->id, $str, null);
     }
 
-    public function find(string $token): ?UserData
+    public function find(int $id): ?UserData
     {
-        $str = $this->get($token);
+        $str = $this->get($id);
 
         if ($str) {
             return unserialize($str);
