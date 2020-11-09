@@ -11,7 +11,7 @@ declare(strict_types=1);
  */
 namespace App\Service\Redis;
 
-use App\Service\Obj\UserObj;
+use App\Service\UserData;
 use Xin\RedisCollection\StringCollection;
 
 class UserCollection extends StringCollection
@@ -26,14 +26,14 @@ class UserCollection extends StringCollection
         return di()->get(\Redis::class);
     }
 
-    public function save(UserObj $obj)
+    public function save(UserData $obj)
     {
         $str = serialize($obj);
 
         return $this->set($obj->token, $str, null);
     }
 
-    public function find(string $token): ?UserObj
+    public function find(string $token): ?UserData
     {
         $str = $this->get($token);
 

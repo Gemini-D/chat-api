@@ -11,12 +11,14 @@ declare(strict_types=1);
  */
 namespace App\Service;
 
-use App\Service\Obj\UserObj;
 use App\Service\Redis\UserCollection;
 use Hyperf\Di\Annotation\Inject;
 
-class UserService extends Service
+class UserDataService extends Service
 {
+    /**
+     * @var UserData[]
+     */
     public $users = [];
 
     /**
@@ -25,19 +27,19 @@ class UserService extends Service
      */
     protected $col;
 
-    public function save(UserObj $obj)
+    public function save(UserData $obj)
     {
         $this->users[$obj->fd] = $obj;
 
         $this->col->save($obj);
     }
 
-    public function find(int $fd): ?UserObj
+    public function find(int $fd): ?UserData
     {
         return $this->users[$fd] ?? null;
     }
 
-    public function delete(UserObj $obj)
+    public function delete(UserData $obj)
     {
         unset($this->users[$obj->fd]);
 

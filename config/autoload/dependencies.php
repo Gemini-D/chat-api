@@ -17,4 +17,5 @@ return [
     Hyperf\Server\Listener\AfterWorkerStartListener::class => App\Kernel\Http\WorkerStartListener::class,
     'protocal.send.message' => SendMessageHandler::class,
     'protocal.user.list' => UserListHandler::class,
+    App\Service\UserServiceInterface::class => App\Service\UserMockeryService::class,
 ];

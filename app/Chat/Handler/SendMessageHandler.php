@@ -14,7 +14,7 @@ namespace App\Chat\Handler;
 use App\Chat\Constants;
 use App\Chat\HandlerInterface;
 use App\Service\Dao\UserDao;
-use App\Service\UserService;
+use App\Service\UserDataService;
 use Hyperf\Di\Annotation\Inject;
 use Hyperf\Nsq\Nsq;
 use Hyperf\Utils\Codec\Json;
@@ -31,7 +31,7 @@ class SendMessageHandler implements HandlerInterface
 
     /**
      * @Inject
-     * @var UserService
+     * @var UserDataService
      */
     protected $service;
 

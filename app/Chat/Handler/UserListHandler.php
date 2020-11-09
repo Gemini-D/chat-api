@@ -15,7 +15,7 @@ use App\Chat\HandlerInterface;
 use App\Model\User;
 use App\Service\Dao\UserDao;
 use App\Service\Formatter\UserFormatter;
-use App\Service\UserService;
+use App\Service\UserDataService;
 use Hyperf\Di\Annotation\Inject;
 use Swoole\WebSocket\Server;
 
@@ -29,7 +29,7 @@ class UserListHandler implements HandlerInterface
 
     /**
      * @Inject
-     * @var UserService
+     * @var UserDataService
      */
     protected $service;
 

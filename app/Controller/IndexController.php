@@ -16,8 +16,7 @@ use App\Chat\HandlerInterface;
 use App\Chat\Node;
 use App\Model\User;
 use App\Service\Dao\UserDao;
-use App\Service\Obj\UserObj;
-use App\Service\UserService;
+use App\Service\UserDataService;
 use Hyperf\Contract\OnCloseInterface;
 use Hyperf\Contract\OnMessageInterface;
 use Hyperf\Contract\OnOpenInterface;
@@ -41,7 +40,7 @@ class IndexController extends Controller implements OnMessageInterface, OnOpenIn
 
     /**
      * @Inject
-     * @var UserService
+     * @var UserDataService
      */
     protected $service;
 
@@ -91,7 +90,7 @@ class IndexController extends Controller implements OnMessageInterface, OnOpenIn
         $this->dao->online($token, $user);
         $node = di()->get(Node::class)->getId();
 
-        $this->service->save(new UserObj($token, $request->fd, $node));
+        $this->service->save(new User($token, $request->fd, $node));
 
         $user = $this->dao->findOnline()->toArray();
 

@@ -9,9 +9,11 @@ declare(strict_types=1);
  * @contact  group@hyperf.io
  * @license  https://github.com/hyperf/hyperf/blob/master/LICENSE
  */
-namespace App\Service\Obj;
+namespace App\Service;
 
-class UserObj
+use Hyperf\Utils\Contracts\Arrayable;
+
+class UserData implements Arrayable
 {
     public $token;
 
