@@ -34,6 +34,12 @@ class UserListHandler implements HandlerInterface
     protected $userService;
 
     /**
+     * @Inject
+     * @var UserFormatter
+     */
+    protected $formatter;
+
+    /**
      * @param $data = [
      *     'protocal' => 'user.list'
      * ]
@@ -42,18 +48,11 @@ class UserListHandler implements HandlerInterface
     {
         // 查询所有在线的用户
         $mine = $this->service->find($fd);
-        $users = $this->userService->find($mine->id, ['is_online' => true]);
+        [$count, $users] = $this->userService->find($mine->id, ['is_online' => true]);
 
-        $result = [];
-        foreach ($users as $user) {
-            $item = UserFormatter::instance()->base($user);
-            if ($mine->token == $user->token) {
-                $item['own'] = true;
-            }
+        $result = $this->formatter->list($users);
 
-            $result[] = $item;
-        }
-
+        $data['count'] = $count;
         $data['list'] = $result;
         $server->push($fd, json_encode($data));
     }

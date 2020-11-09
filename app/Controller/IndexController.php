@@ -15,6 +15,7 @@ use App\Chat\Handler\ErrorMessageHandler;
 use App\Chat\HandlerInterface;
 use App\Chat\Node;
 use App\Model\User;
+use App\Service\Formatter\UserFormatter;
 use App\Service\UserData;
 use App\Service\UserDataService;
 use App\Service\UserServiceInterface;
@@ -44,6 +45,12 @@ class IndexController extends Controller implements OnMessageInterface, OnOpenIn
      * @var UserServiceInterface
      */
     protected $userService;
+
+    /**
+     * @Inject
+     * @var UserFormatter
+     */
+    protected $formatter;
 
     public function onClose($server, int $fd, int $reactorId): void
     {
@@ -94,10 +101,7 @@ class IndexController extends Controller implements OnMessageInterface, OnOpenIn
         $this->service->save(new UserData($user->id, $token, $request->fd, $node));
 
         [$count, $models] = $this->userService->find($user->id, ['is_online' => true]);
-        $users = [];
-        foreach ($models as $model) {
-            $users[] = $model->toArray();
-        }
+        $users = $this->formatter->list($models, $user);
 
         $result = [
             'protocal' => 'user.list',
