@@ -30,9 +30,12 @@ interface UserServiceInterface
      * @param $search = [
      *     'is_online' => true,
      * ]
-     * @return User[]
+     * @return array [int, User[]]
      */
     public function find(int $id, array $search = [], int $offset = 0, int $limit = 10): array;
 
+    /**
+     * 某用户上线
+     */
     public function online(User $user): void;
 }

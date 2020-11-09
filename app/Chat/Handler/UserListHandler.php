@@ -13,7 +13,6 @@ namespace App\Chat\Handler;
 
 use App\Chat\HandlerInterface;
 use App\Model\User;
-use App\Service\Dao\UserDao;
 use App\Service\Formatter\UserFormatter;
 use App\Service\UserDataService;
 use App\Service\UserServiceInterface;
@@ -22,12 +21,6 @@ use Swoole\WebSocket\Server;
 
 class UserListHandler implements HandlerInterface
 {
-    /**
-     * @Inject
-     * @var UserDao
-     */
-    protected $dao;
-
     /**
      * @Inject
      * @var UserDataService

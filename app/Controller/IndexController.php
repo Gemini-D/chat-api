@@ -15,7 +15,6 @@ use App\Chat\Handler\ErrorMessageHandler;
 use App\Chat\HandlerInterface;
 use App\Chat\Node;
 use App\Model\User;
-use App\Service\Dao\UserDao;
 use App\Service\UserData;
 use App\Service\UserDataService;
 use App\Service\UserServiceInterface;
@@ -33,12 +32,6 @@ class IndexController extends Controller implements OnMessageInterface, OnOpenIn
      * @var ErrorMessageHandler
      */
     protected $errorMessageHandler;
-
-    /**
-     * @Inject
-     * @var UserDao
-     */
-    protected $dao;
 
     /**
      * @Inject
@@ -100,13 +93,18 @@ class IndexController extends Controller implements OnMessageInterface, OnOpenIn
 
         $this->service->save(new UserData($user->id, $token, $request->fd, $node));
 
-        $user = $this->userService->find($user->id, ['is_online' => true]);
+        [$count, $models] = $this->userService->find($user->id, ['is_online' => true]);
+        $users = [];
+        foreach ($models as $model) {
+            $users[] = $model->toArray();
+        }
 
         $result = [
             'protocal' => 'user.list',
-            'list' => $user,
+            'count' => $count,
+            'list' => $users,
         ];
 
-        $server->push($request->fd, json_encode($result));
+        $server->push(json_encode($result));
     }
 }

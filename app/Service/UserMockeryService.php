@@ -14,6 +14,7 @@ namespace App\Service;
 use App\Model\User;
 use Hyperf\Di\Annotation\Inject;
 use Hyperf\Redis\Redis;
+use Hyperf\Utils\Codec\Json;
 
 /**
  * 根据实际情况修改.
@@ -28,10 +29,12 @@ class UserMockeryService implements UserServiceInterface
 
     public function first(int $id): ?User
     {
-        $res = $this->redis->get($key = $this->getKey($id));
-        if (! $res) {
+        $string = $this->redis->get($key = $this->getKey($id));
+        if (! $string) {
             $res = $this->mock($key);
-            $this->redis->set($key, $res, 86400);
+            $this->redis->set($key, Json::encode($res), 86400);
+        } else {
+            $res = Json::decode($string);
         }
 
         return $this->fill($res);
@@ -45,6 +48,7 @@ class UserMockeryService implements UserServiceInterface
 
     public function find(int $token, array $search = [], int $offset = 0, int $limit = 10): array
     {
+        return [0, []];
     }
 
     public function online(User $user): void

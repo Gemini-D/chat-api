@@ -13,7 +13,6 @@ namespace App\Chat\Handler;
 
 use App\Chat\Constants;
 use App\Chat\HandlerInterface;
-use App\Service\Dao\UserDao;
 use App\Service\UserDataService;
 use App\Service\UserServiceInterface;
 use Hyperf\Di\Annotation\Inject;
@@ -24,12 +23,6 @@ use Swoole\WebSocket\Server;
 
 class SendMessageHandler implements HandlerInterface
 {
-    /**
-     * @Inject
-     * @var UserDao
-     */
-    protected $dao;
-
     /**
      * @Inject
      * @var UserDataService
