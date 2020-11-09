@@ -26,19 +26,35 @@ class UserMockeryService implements UserServiceInterface
      */
     protected $redis;
 
-    public function first(string $token): ?User
+    public function first(int $id): ?User
     {
-        $res = $this->redis->get($token);
+        $res = $this->redis->get($key = $this->getKey($id));
         if (! $res) {
-            $res = $this->mock($token);
-            $this->redis->set($token, $res, 86400);
+            $res = $this->mock($key);
+            $this->redis->set($key, $res, 86400);
         }
 
         return $this->fill($res);
     }
 
-    public function find(string $token, array $search = [], int $offset = 0, int $limit = 10): array
+    public function firstByToken(string $token): ?User
     {
+        $id = (int) $token;
+        return $this->first($id);
+    }
+
+    public function find(int $token, array $search = [], int $offset = 0, int $limit = 10): array
+    {
+    }
+
+    public function online(User $user): void
+    {
+        // TODO: Implement online() method.
+    }
+
+    public function getKey(int $id): string
+    {
+        return 'user:' . $id;
     }
 
     public function mock(string $token): array

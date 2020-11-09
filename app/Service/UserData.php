@@ -11,18 +11,31 @@ declare(strict_types=1);
  */
 namespace App\Service;
 
-use Hyperf\Utils\Contracts\Arrayable;
-
-class UserData implements Arrayable
+class UserData
 {
+    /**
+     * @var int
+     */
+    public $id;
+
+    /**
+     * @var string
+     */
     public $token;
 
+    /**
+     * @var int
+     */
     public $fd;
 
+    /**
+     * @var string
+     */
     public $node;
 
-    public function __construct($token, $fd, $node)
+    public function __construct(int $id, string $token, int $fd, string $node)
     {
+        $this->id = $id;
         $this->token = $token;
         $this->fd = $fd;
         $this->node = $node;

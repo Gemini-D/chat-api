@@ -15,6 +15,7 @@ use App\Chat\Constants;
 use App\Chat\HandlerInterface;
 use App\Service\Dao\UserDao;
 use App\Service\UserDataService;
+use App\Service\UserServiceInterface;
 use Hyperf\Di\Annotation\Inject;
 use Hyperf\Nsq\Nsq;
 use Hyperf\Utils\Codec\Json;
@@ -54,6 +55,12 @@ class SendMessageHandler implements HandlerInterface
     protected $errorHandler;
 
     /**
+     * @Inject
+     * @var UserServiceInterface
+     */
+    protected $userService;
+
+    /**
      * @param $data = [
      *     'protocal' => 'send.message',
      *     'data' => [
@@ -68,7 +75,7 @@ class SendMessageHandler implements HandlerInterface
         $message = $data['data']['message'] ?? null;
 
         if ($id && ! is_null($message)) {
-            $user = $this->dao->first($id);
+            $user = $this->userService->first($id);
             if (empty($user)) {
                 $this->errorHandler->handle($server, $fd, [
                     'message' => '目标用户不存在',
@@ -77,7 +84,6 @@ class SendMessageHandler implements HandlerInterface
             }
 
             $this->nsq->publish(Constants::SEND_MESSAGE, Json::encode([
-                'token' => $user->token,
                 'data' => $data,
             ]));
         }

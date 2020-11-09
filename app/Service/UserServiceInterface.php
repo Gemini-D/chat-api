@@ -18,7 +18,12 @@ interface UserServiceInterface
     /**
      * 查询某人的基本信息.
      */
-    public function first(string $token): ?User;
+    public function first(int $id): ?User;
+
+    /**
+     * 通过 TOKEN 查询某人基本信息.
+     */
+    public function firstByToken(string $token): ?User;
 
     /**
      * 查询某人的好友列表.
@@ -27,5 +32,7 @@ interface UserServiceInterface
      * ]
      * @return User[]
      */
-    public function find(string $token, array $search = [], int $offset = 0, int $limit = 10): array;
+    public function find(int $id, array $search = [], int $offset = 0, int $limit = 10): array;
+
+    public function online(User $user): void;
 }

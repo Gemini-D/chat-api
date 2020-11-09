@@ -16,7 +16,9 @@ use App\Chat\HandlerInterface;
 use App\Chat\Node;
 use App\Model\User;
 use App\Service\Dao\UserDao;
+use App\Service\UserData;
 use App\Service\UserDataService;
+use App\Service\UserServiceInterface;
 use Hyperf\Contract\OnCloseInterface;
 use Hyperf\Contract\OnMessageInterface;
 use Hyperf\Contract\OnOpenInterface;
@@ -44,12 +46,18 @@ class IndexController extends Controller implements OnMessageInterface, OnOpenIn
      */
     protected $service;
 
+    /**
+     * @Inject
+     * @var UserServiceInterface
+     */
+    protected $userService;
+
     public function onClose($server, int $fd, int $reactorId): void
     {
         if ($obj = $this->service->find($fd)) {
             $this->service->delete($obj);
 
-            if ($user = $this->dao->firstByToken($obj->token)) {
+            if ($user = $this->userService->firstByToken($obj->token)) {
                 $user->is_online = User::OFFLINE;
                 $user->save();
             }
@@ -78,7 +86,7 @@ class IndexController extends Controller implements OnMessageInterface, OnOpenIn
     {
         $token = $this->request->input('token');
 
-        $user = $this->dao->firstByToken($token);
+        $user = $this->userService->firstByToken($token);
         if (empty($user)) {
             $this->errorMessageHandler->handle($server, $request->fd, [
                 'message' => 'The Token is invalid.',
@@ -87,12 +95,12 @@ class IndexController extends Controller implements OnMessageInterface, OnOpenIn
             return;
         }
 
-        $this->dao->online($token, $user);
+        $this->userService->online($user);
         $node = di()->get(Node::class)->getId();
 
-        $this->service->save(new User($token, $request->fd, $node));
+        $this->service->save(new UserData($user->id, $token, $request->fd, $node));
 
-        $user = $this->dao->findOnline()->toArray();
+        $user = $this->userService->find($user->id, ['is_online' => true]);
 
         $result = [
             'protocal' => 'user.list',

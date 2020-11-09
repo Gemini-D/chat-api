@@ -16,6 +16,7 @@ use App\Model\User;
 use App\Service\Dao\UserDao;
 use App\Service\Formatter\UserFormatter;
 use App\Service\UserDataService;
+use App\Service\UserServiceInterface;
 use Hyperf\Di\Annotation\Inject;
 use Swoole\WebSocket\Server;
 
@@ -34,6 +35,12 @@ class UserListHandler implements HandlerInterface
     protected $service;
 
     /**
+     * @Inject
+     * @var UserServiceInterface
+     */
+    protected $userService;
+
+    /**
      * @param $data = [
      *     'protocal' => 'user.list'
      * ]
@@ -41,8 +48,8 @@ class UserListHandler implements HandlerInterface
     public function handle(Server $server, int $fd, $data)
     {
         // 查询所有在线的用户
-        $users = $this->dao->findOnline();
         $mine = $this->service->find($fd);
+        $users = $this->userService->find($mine->id, ['is_online' => true]);
 
         $result = [];
         foreach ($users as $user) {
