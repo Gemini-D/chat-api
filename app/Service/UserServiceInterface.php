@@ -38,4 +38,9 @@ interface UserServiceInterface
      * 某用户上线
      */
     public function online(User $user): void;
+
+    /**
+     * 某用户下线
+     */
+    public function offline(User $user): void;
 }

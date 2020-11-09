@@ -56,6 +56,11 @@ class UserMockeryService implements UserServiceInterface
         // TODO: Implement online() method.
     }
 
+    public function offline(User $user): void
+    {
+        // TODO: Implement offline() method.
+    }
+
     public function getKey(int $id): string
     {
         return 'user:' . $id;

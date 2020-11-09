@@ -14,7 +14,6 @@ namespace App\Controller;
 use App\Chat\Handler\ErrorMessageHandler;
 use App\Chat\HandlerInterface;
 use App\Chat\Node;
-use App\Model\User;
 use App\Service\Formatter\UserFormatter;
 use App\Service\UserData;
 use App\Service\UserDataService;
@@ -58,8 +57,7 @@ class IndexController extends Controller implements OnMessageInterface, OnOpenIn
             $this->service->delete($obj);
 
             if ($user = $this->userService->firstByToken($obj->token)) {
-                $user->is_online = User::OFFLINE;
-                $user->save();
+                $this->userService->offline($user);
             }
         }
     }
