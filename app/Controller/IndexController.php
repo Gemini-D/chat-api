@@ -64,14 +64,13 @@ class IndexController extends Controller implements OnMessageInterface, OnOpenIn
         }
     }
 
-    public function onMessage($server, Frame $frame): void
+    public function onMessage($response, Frame $frame): void
     {
-        $fd = $frame->fd;
         $data = json_decode($frame->data, true);
 
         $protocal = 'protocal.' . $data['protocal'] ?? '';
         if (! $this->container->has($protocal)) {
-            $this->errorMessageHandler->handle($server, $fd, [
+            $this->errorMessageHandler->handle($response, [
                 'message' => 'The Protocal is invalid.',
             ]);
             return;
@@ -79,7 +78,7 @@ class IndexController extends Controller implements OnMessageInterface, OnOpenIn
 
         /** @var HandlerInterface $handler */
         $handler = $this->container->get($protocal);
-        $handler->handle($server, $fd, $data);
+        $handler->handle($response, $data);
     }
 
     public function onOpen($server, Request $request): void

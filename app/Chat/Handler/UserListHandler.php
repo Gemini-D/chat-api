@@ -17,7 +17,7 @@ use App\Service\Formatter\UserFormatter;
 use App\Service\UserDataService;
 use App\Service\UserServiceInterface;
 use Hyperf\Di\Annotation\Inject;
-use Swoole\WebSocket\Server;
+use Swoole\Http\Response;
 
 class UserListHandler implements HandlerInterface
 {
@@ -44,16 +44,16 @@ class UserListHandler implements HandlerInterface
      *     'protocal' => 'user.list'
      * ]
      */
-    public function handle(Server $server, int $fd, $data)
+    public function handle(Response $server, $data)
     {
         // 查询所有在线的用户
-        $mine = $this->service->find($fd);
+        $mine = $this->service->find($server->fd);
         [$count, $users] = $this->userService->find($mine->id, ['is_online' => true]);
 
         $result = $this->formatter->list($users);
 
         $data['count'] = $count;
         $data['list'] = $result;
-        $server->push($fd, json_encode($data));
+        $server->push(json_encode($data));
     }
 }

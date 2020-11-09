@@ -12,7 +12,7 @@ declare(strict_types=1);
 namespace App\Chat\Handler;
 
 use App\Chat\HandlerInterface;
-use Swoole\WebSocket\Server;
+use Swoole\Http\Response;
 
 class ErrorMessageHandler implements HandlerInterface
 {
@@ -22,12 +22,12 @@ class ErrorMessageHandler implements HandlerInterface
      *     'close' => false, // 是否前置关闭客户端
      * ]
      */
-    public function handle(Server $server, int $fd, $data)
+    public function handle(Response $server, $data)
     {
-        $server->push($fd, json_encode($data));
+        $server->push(json_encode($data));
 
         if ($data['close'] ?? false) {
-            $server->close($fd);
+            $server->close();
         }
     }
 }

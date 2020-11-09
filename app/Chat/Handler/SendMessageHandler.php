@@ -19,7 +19,7 @@ use Hyperf\Di\Annotation\Inject;
 use Hyperf\Nsq\Nsq;
 use Hyperf\Utils\Codec\Json;
 use Hyperf\WebSocketServer\Sender;
-use Swoole\WebSocket\Server;
+use Swoole\Http\Response;
 
 class SendMessageHandler implements HandlerInterface
 {
@@ -62,7 +62,7 @@ class SendMessageHandler implements HandlerInterface
      *     ]
      * ]
      */
-    public function handle(Server $server, int $fd, $data)
+    public function handle(Response $server, $data)
     {
         $id = $data['data']['id'] ?? 0;
         $message = $data['data']['message'] ?? null;
@@ -70,7 +70,7 @@ class SendMessageHandler implements HandlerInterface
         if ($id && ! is_null($message)) {
             $user = $this->userService->first($id);
             if (empty($user)) {
-                $this->errorHandler->handle($server, $fd, [
+                $this->errorHandler->handle($server, [
                     'message' => '目标用户不存在',
                 ]);
                 return;
