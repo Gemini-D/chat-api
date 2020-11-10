@@ -23,6 +23,6 @@ class UserMockeryServiceTest extends HttpTestCase
     public function testMockeryName()
     {
         $name = di()->get(UserMockeryService::class)->mockName();
-        $this->assertSame(3, mb_strlen($name));
+        $this->assertTrue(in_array(mb_strlen($name), [2, 3]));
     }
 }
